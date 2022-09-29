@@ -1,7 +1,9 @@
-from orchestrator.automation.automation import RequestActor
-from orchestrator.automation.automation import Step
+from orchestrator.automation.core import Handle, Step
+import monitor_servers_message
 
-class MonitorServersActor(RequestActor):
+
+@Handle(monitor_servers_message.MonitorServersMessage)
+class MonitorServersActor:
 
     def starts_with(self):
         return self.validate

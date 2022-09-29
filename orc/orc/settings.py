@@ -129,7 +129,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 USER = 'shiggy'
 AWS_QUEUE_PREFIX=f'{USER}-'
 
-AWS_MESSAGE_QUEUE_NAME = f'{AWS_QUEUE_PREFIX}message-queue.fifo'
+AWS_MESSAGE_QUEUE_NAME = f'{AWS_QUEUE_PREFIX}message-queue'
 
 AWS_KEY='AKIA2VRBJ2JZHT2RPGIJ'
 AWS_SECRET='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'
@@ -143,7 +143,7 @@ LOGGER = {
         'disable_existing_loggers': True,
         "formatters": {
             "verbose": {
-                "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(threadName)s %(thread)d | %(message)s"
+                "format": "%(levelname)s %(asctime)s %(filename)s:%(lineno)s %(thread)d  | %(message)s"
             },
         },
         "handlers": {

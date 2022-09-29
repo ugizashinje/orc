@@ -1,5 +1,2 @@
-from orchestrator.automation.automation import RequestMessage
-
-
-class TerminateServerMessage(RequestMessage):
+class TerminateServerMessage:
     pass
