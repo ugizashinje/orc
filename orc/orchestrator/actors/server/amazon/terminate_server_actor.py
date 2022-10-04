@@ -1,12 +1,12 @@
 
 from orchestrator.actors.server.amazon.terminate_server_message import TerminateServerMessage
-from orchestrator.automation.core import Handle, Step
+from orchestrator.automation.core import Handle, Step, Actor
 
 
 @Handle(TerminateServerMessage)
-class TerminateServerActor:
+class TerminateServerActor(Actor):
 
-    def starts_with(self):
+    def first_step(self):
         return self.terminate
 
     @Step()

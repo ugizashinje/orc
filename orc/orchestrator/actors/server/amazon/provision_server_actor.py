@@ -10,7 +10,7 @@ class ProvisionServerActor(Actor):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def starts_with(self):
+    def first_step(self):
         return self.validate
 
     @Step()

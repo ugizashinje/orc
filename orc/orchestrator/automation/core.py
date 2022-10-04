@@ -1,4 +1,6 @@
 import logging
+import types
+from abc import ABC, abstractmethod
 from enum import Enum
 
 
@@ -59,12 +61,42 @@ class StepFunction:
         self.func = func
         self.step = step
 
-    def __call__(self):
-        res = self.func(self)
+    def __call__(self,*args, **kwargs):
+        res = self.func(*args, **kwargs)
         return res
 
 
-class Actor:
-    def __init__(self, request):
+    def __get__(self, instance, cls=None):
+        """
+        Wraps the function with 'self'
+        :param instance:
+        :param cls:
+        :return:
+        """
+        if instance is None:
+            func = self.func
+            if not hasattr(func, "__call__"):
+                self.func = func.__get__(None, cls)
+            return self
+        else:
+            return types.MethodType(self, instance)
+
+class Actor(ABC):
+    def __init__(self):
+        self.data = dict()
+        self.input = dict()
+        self.context = dict()
+
+    @abstractmethod
+    def first_step(self):
         pass
+
+    def before_all(self):
+        pass
+
+    def before_step(self):
+        pass
+
+    def next(self, func, delay=Delay.NONE):
+        return (func, delay)
 

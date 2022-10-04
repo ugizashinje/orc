@@ -36,8 +36,8 @@ class Server(models.Model):
 class ServerRequest(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE)
     body = models.JSONField(default=dict, null=False, blank=False)
-    name = models.CharField(blank=False, null=False, max_length=256, default="")
-
+    message = models.CharField(blank=False, null=False, max_length=256, default="")
+    status = models.CharField(blank=False, null=False, default=orchestrator.constants.SERVER_REQUEST.Status.PENDING, max_length=16)
 
 class CloudServiceProperty(models.Model):
     cloud_service = models.ForeignKey(CloudService, on_delete=models.CASCADE)

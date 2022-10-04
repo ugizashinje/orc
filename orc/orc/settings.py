@@ -129,7 +129,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 USER = 'shiggy'
 AWS_QUEUE_PREFIX=f'{USER}-'
 
+# duplicate definition, inspect later
 AWS_MESSAGE_QUEUE_NAME = f'{AWS_QUEUE_PREFIX}message-queue'
+AWS_QUEUE_URL = f'https://sqs.us-east-1.amazonaws.com/733435515506/{AWS_MESSAGE_QUEUE_NAME}'
 
 AWS_KEY='AKIA2VRBJ2JZHT2RPGIJ'
 AWS_SECRET='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'

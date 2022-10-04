@@ -1,10 +1,9 @@
 import threading
 import time
-import boto3
-import orc.settings
 import logging
-from orchestrator.models import CloudService, CloudServiceProperty
-
+from orchestrator.automation.core import mapping
+import orchestrator.cloud.amazon
+import orchestrator.automation.amazon
 
 class RequestMessage:
     pass
@@ -15,31 +14,22 @@ class RequestActor:
 
 class DaemonThread:
 
-    def __init__(self, name="Deamon thread"):
+    def __init__(self, name="Deamon thread", message_queue_url=None):
         self.logger = logging.getLogger(__name__)
         self.thread = threading.Thread(name=name, target=self, daemon=True)
-        self.sqs = boto3.resource('sqs',
-                             aws_access_key_id=orc.settings.AWS_KEY,
-                             aws_secret_access_key=orc.settings.AWS_SECRET,
-                             region_name=orc.settings.REGION
-                             )
-        self.queue = self.sqs.create_queue(QueueName=orc.settings.AWS_MESSAGE_QUEUE_NAME, Attributes={})
-        self.message_queue_url = self.queue.url
+        self.message_queue_url = message_queue_url
+        self.client = orchestrator.cloud.amazon.get_client('sqs')
+        self.processor = orchestrator.automation.amazon.Processor()
         self.thread.start()
 
     def __call__(self, *args, **kwargs):
         self.logger.debug('started listening for messages')
         while (True):
-            msgs = self.queue.receive_messages(QueueUrl=self.message_queue_url, WaitTimeSeconds=10)
             time.sleep(1)
-
-            for msg in msgs:
-                self.logger.debug(f'received {str(msg.body)}')
-            if not msgs:
-                self.logger.debug('pooling' if len(msgs) else f'recieved {len(msgs)}')
+            messages = self.processor.get_message()
+            for msg in messages:
+                self.processor.digest(msg)
+            if messages:
+                self.logger.debug(f'received no:{len(messages)} messages')
             else:
-                self.logger.debug(f'received no:{len(msgs)} messages')
-                self.sqs.meta.client.delete_message_batch(
-                    QueueUrl=self.queue.url,
-                    Entries=[{'Id': msg.message_id, 'ReceiptHandle': msg.receipt_handle} for msg in msgs]
-                )
+                self.logger.debug('pooling' if len(messages) else f'recieved {len(messages)}')

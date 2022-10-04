@@ -1,6 +1,7 @@
 import logging
 from django.apps import AppConfig
-
+import boto3
+import orc.settings
 
 class OrchestratorConfig(AppConfig):
 
@@ -15,4 +16,11 @@ class OrchestratorConfig(AppConfig):
         pass
         import orchestrator.automation.daemon
         import orchestrator.automation.register
-        dt = orchestrator.automation.daemon.DaemonThread()
+        self.sqs = boto3.resource('sqs',
+                             aws_access_key_id=orc.settings.AWS_KEY,
+                             aws_secret_access_key=orc.settings.AWS_SECRET,
+                             region_name=orc.settings.REGION
+                             )
+        queue = self.sqs.create_queue(QueueName=orc.settings.AWS_MESSAGE_QUEUE_NAME, Attributes={})
+
+        dt = orchestrator.automation.daemon.DaemonThread(message_queue_url=queue.url)
