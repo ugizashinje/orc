@@ -133,8 +133,8 @@ AWS_QUEUE_PREFIX=f'{USER}-'
 AWS_MESSAGE_QUEUE_NAME = f'{AWS_QUEUE_PREFIX}message-queue'
 AWS_QUEUE_URL = f'https://sqs.us-east-1.amazonaws.com/733435515506/{AWS_MESSAGE_QUEUE_NAME}'
 
-AWS_KEY='AKIA2VRBJ2JZHT2RPGIJ'
-AWS_SECRET='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'
+AWS_KEY='xxx-insert'
+AWS_SECRET='xxx-insert'
 REGION='us-east-1'
 
 _handlers = [] if len(sys.argv) > 0 and sys.argv[1] == 'shell' else ['console']
