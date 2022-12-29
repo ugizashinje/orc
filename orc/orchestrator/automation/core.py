@@ -1,8 +1,15 @@
+import inspect
 import logging
 import types
 from abc import ABC, abstractmethod
 from enum import Enum
+import orchestrator.models
 
+mappingMessages = dict()
+mappingRequests = {
+    orchestrator.models.Server.__name__: (orchestrator.models.Server, orchestrator.models.ServerRequest),
+    orchestrator.models.CloudService.__name__: (orchestrator.models.CloudService, orchestrator.models.CloudServiceRequest)
+}
 
 def fullname(obj):
     klass = object.__class__
@@ -11,7 +18,6 @@ def fullname(obj):
         return klass.__qualname__ # avoid outputs like 'builtins.str'
     return module + '.' + klass.__qualname__
 
-mapping = dict()
 
 class Handle:
     def __init__(self, message):
@@ -25,7 +31,7 @@ class Handle:
             raise SystemExit(f"Actor {self} does not define message property")
         if self.actor is None:
             self.actor = cls
-            mapping[f'{self.message.__module__}.{self.message.__name__}'] = cls
+            mappingMessages[f'{self.message.__module__}.{self.message.__name__}'] = cls
             self.logger.debug(f'Imported actor class {cls.__name__} to process message {self.message.__name__}')
         return cls # applied at class lever, should return class
 
@@ -60,9 +66,11 @@ class StepFunction:
         self.logger = logging.getLogger(__name__)
         self.func = func
         self.step = step
+        self.kargs = (karg for karg in inspect.signature(func).parameters)
 
-    def __call__(self,*args, **kwargs):
-        res = self.func(*args, **kwargs)
+    def __call__(self, actor, **kwargs):
+        filtered_kwargs ={k: kwargs[k] for k in self.kargs if kwargs.get(k)}
+        res = self.func(actor, **filtered_kwargs)
         return res
 
 
@@ -81,11 +89,15 @@ class StepFunction:
         else:
             return types.MethodType(self, instance)
 
+
 class Actor(ABC):
+    COMPLETED = 'completed'
+
     def __init__(self):
         self.data = dict()
         self.input = dict()
         self.context = dict()
+        self.main_object = None
 
     @abstractmethod
     def first_step(self):

@@ -33,11 +33,20 @@ class Server(models.Model):
     def __str__(self):
         return self.name
 
+
 class ServerRequest(models.Model):
-    server = models.ForeignKey(Server, on_delete=models.CASCADE)
+    object_id = models.IntegerField(default=None, null=True, blank=True)
     body = models.JSONField(default=dict, null=False, blank=False)
     message = models.CharField(blank=False, null=False, max_length=256, default="")
     status = models.CharField(blank=False, null=False, default=orchestrator.constants.SERVER_REQUEST.Status.PENDING, max_length=16)
+
+
+class CloudServiceRequest(models.Model):
+    object_id = models.IntegerField(default=None, null=True, blank=True)
+    body = models.JSONField(default=dict, null=False, blank=False)
+    message = models.CharField(blank=False, null=False, max_length=256, default="")
+    status = models.CharField(blank=False, null=False, default=orchestrator.constants.SERVER_REQUEST.Status.PENDING, max_length=16)
+
 
 class CloudServiceProperty(models.Model):
     cloud_service = models.ForeignKey(CloudService, on_delete=models.CASCADE)

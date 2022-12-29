@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='serverrequest',
             name='status',
-            field=models.CharField(default=orchestrator.constants.SERVER_REQUEST.Status['PENDING'], max_length=16),
+            field=models.CharField(default=orchestrator.constants.SERVER_REQUEST.Status.PENDING, max_length=16),
         ),
     ]

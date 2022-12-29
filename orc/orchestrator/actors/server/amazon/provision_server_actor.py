@@ -15,10 +15,13 @@ class ProvisionServerActor(Actor):
 
     @Step()
     def validate(self):
-        self.logger.debug('Amazon start server')
-
-        return self.next(self.provision_server, Delay.NONE)
+        self.logger.debug(f'Amazon validate server {self.input["name"]}')
+        self.data['arg'] = 3
+        return self.next(self.provision_server, Delay.ONE)
 
     @Step()
-    def provision_server(self):
-        return self.next(self.finish)
+    def provision_server(self, arg=None):
+        self.data["server"] = self.input["name"]
+        self.logger.debug(f'Amazon provision server {self.input["name"]} , arg: {arg} ')
+
+        return Actor.COMPLETED

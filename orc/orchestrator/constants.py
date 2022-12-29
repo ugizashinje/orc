@@ -23,7 +23,7 @@ class Server:
 
 
 class SERVER_REQUEST:
-    class Status(Enum):
+    class Status:
         PENDING = "pending"
         PROCESSING = "processing"
         FAILED = "failed"

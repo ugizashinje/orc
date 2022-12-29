@@ -20,7 +20,7 @@ def send_request(msg, main_object, delay=Delay.NONE, parent_request_id=None):
     body = json.dumps(msg.__dict__)
     attributes = {
         'type': {
-            'StringValue': 'request',
+            'StringValue': main_object.__class__.__name__ ,
             'DataType': 'String'
         },
         'message': {
@@ -28,7 +28,7 @@ def send_request(msg, main_object, delay=Delay.NONE, parent_request_id=None):
             'DataType': 'String'
         },
         'main_object': {
-            'StringValue': str(main_object),
+            'StringValue': str(main_object.id),
             'DataType': 'Number'
         },
     }
@@ -50,12 +50,25 @@ def send_delay(main_object, request_id, delay=Delay.NONE):
     client = get_client('sqs')
     message_full_name = 'delay'
     body = str(delay.value)
-    attributes = {
-        'type': 'delay',
-        'message': body,
-        'object': main_object,
-        'request_id': request_id
+    attributes = attributes = {
+        'type': {
+            'StringValue': main_object.__class__.__name__ ,
+            'DataType': 'String'
+        },
+        'message': {
+            'StringValue': message_full_name,
+            'DataType': 'String'
+        },
+        'main_object': {
+            'StringValue': str(main_object.id),
+            'DataType': 'Number'
+        },
+        'request_id' : {
+            'StringValue': str(request_id),
+            'DataType': 'Number'
+        }
     }
+
     client.send_message(QueueUrl=orc.settings.AWS_QUEUE_URL,
                         DelaySeconds=delay.value,
                         MessageBody=body,

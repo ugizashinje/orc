@@ -1,9 +1,11 @@
+import sys
 import threading
 import time
 import logging
-from orchestrator.automation.core import mapping
+from orchestrator.automation.core import mappingMessages
 import orchestrator.cloud.amazon
 import orchestrator.automation.amazon
+import redis
 
 class RequestMessage:
     pass
@@ -21,6 +23,8 @@ class DaemonThread:
         self.client = orchestrator.cloud.amazon.get_client('sqs')
         self.processor = orchestrator.automation.amazon.Processor()
         self.thread.start()
+        self.redis = redis.Redis()
+        print(f'\n\n\n DEAMON INITIATED \n\n {sys.argv} \n\n')
 
     def __call__(self, *args, **kwargs):
         self.logger.debug('started listening for messages')
