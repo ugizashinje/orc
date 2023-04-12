@@ -131,13 +131,14 @@ AWS_QUEUE_PREFIX=f'{USER}-'
 
 # duplicate definition, inspect later
 AWS_MESSAGE_QUEUE_NAME = f'{AWS_QUEUE_PREFIX}message-queue'
-AWS_QUEUE_URL = f'https://sqs.us-east-1.amazonaws.com/733435515506/{AWS_MESSAGE_QUEUE_NAME}'
+AWS_QUEUE_URL = f'https://sqs.eu-central-1.amazonaws.com/933309557267/{AWS_MESSAGE_QUEUE_NAME}'
 
-AWS_KEY='xxx-insert'
-AWS_SECRET='xxx-insert'
-REGION='us-east-1'
+AWS_KEY = 'AKIA5STMVVIJ2ISZLTHU'
+AWS_SECRET = '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'
+# REGION = 'us-east-1'
+REGION = 'eu-central-1'
 
-_handlers = [] if len(sys.argv) > 0 and sys.argv[1] == 'shell' else ['console']
+# _handlers = [] if len(sys.argv) > 0 and sys.argv[1] == 'shell' else ['console']
 
 
 LOGGER = {
@@ -160,21 +161,21 @@ LOGGER = {
                 'level': 'DEBUG'
             },
         },
-        'loggers': {
-            "__main__": {
-                "handlers": _handlers,
-                "level": "DEBUG",
-                "propagate": True,
-            },
-            "sentry_sdk.errors": {
-                'handlers': _handlers,
-                "level": "DEBUG",
-                "propagate": True,
-            },
-            "orchestrator": {
-                'handlers': _handlers,
-                "level": "DEBUG",
-                "propagate": True,
-            },
-        }
+        # 'loggers': {
+        #     "__main__": {
+        #         "handlers": _handlers,
+        #         "level": "DEBUG",
+        #         "propagate": True,
+        #     },
+        #     "sentry_sdk.errors": {
+        #         'handlers': _handlers,
+        #         "level": "DEBUG",
+        #         "propagate": True,
+        #     },
+        #     "orchestrator": {
+        #         'handlers': _handlers,
+        #         "level": "DEBUG",
+        #         "propagate": True,
+        #     },
+        # }
     }
